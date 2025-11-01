@@ -13,7 +13,7 @@ app.use(express.json());
 
 dotenv.config();
 
-const uri="mongodb+srv://sujitha:12345@smart.tupstte.mongodb.net/?appName=smart";
+const uri=process.env.MONGODB_URI;
 
 
 const connect = async()=>{

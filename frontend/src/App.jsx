@@ -8,13 +8,15 @@ import DashboardLayout from "@/layouts/dashboardlayout";
 
 
 // Pages
-import Home from "@/pages/home"
+import Home from "@/pages/home";
 import LoginForm from "@/pages/login";
 import SignupForm from "@/pages/signup";
 import About from "@/pages/about";
 import Dashboard from "@/pages/dashboard";
 import WeatherMonitor from "@/pages/weather-monitor";
 import Riskpredict from "@/pages/risk-predict";
+import ForgotPassword from "@/pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 
 
@@ -41,6 +43,8 @@ const App = () => {
         <Route element={<AuthLayout/>}>
          <Route path="login" element={<LoginForm/>}/>
          <Route path="signup" element={<SignupForm/>}/>
+        <Route path="forgotPassword" element={<ForgotPassword />} />
+        <Route path="resetPassword/:token" element={<ResetPassword/>} />
 
 
         </Route>

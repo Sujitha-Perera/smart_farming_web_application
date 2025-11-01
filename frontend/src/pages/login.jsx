@@ -26,6 +26,8 @@ function LoginForm() {
 
       console.log('Login successful:', response.data);
       alert(response.data.message);
+      alert(`Welcome back, ${response.data.user.name}!`);
+      
 
       // ✅ Save JWT token in localStorage
       localStorage.setItem('token', response.data.token);
@@ -92,7 +94,7 @@ function LoginForm() {
 
             {/* 👇 ADDED Forgot Password link */}
             <div className="flex justify-end text-sm">
-              <Link to="/forgot-password" className="font-medium text-green-900 hover:text-green-700/80 hover:underline">
+              <Link to="/forgotPassword" className="font-medium text-green-900 hover:text-green-700/80 hover:underline">
                 Forgot your password?
               </Link>
             </div>
