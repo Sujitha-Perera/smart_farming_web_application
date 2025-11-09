@@ -8,7 +8,7 @@ const navItems = [
     { name: 'Weather Monitoring', icon: '☁️', path: '/dashboard/weather' },
     { name: 'Risk Prediction', icon: '🚨', path: '/dashboard/risks' },
     { name: 'Crop Analytics', icon: '📈', path: '/dashboard/analytics' },
-    { name: 'Farming Guidance', icon: '🌱', path: '/dashboard/guidance' },
+    { name: 'Manage Crop', icon: '🌱', path: '/dashboard/manage' },
     { name: 'My Profile', icon: '👤', path: '/dashboard/profile' },
 ];
 
@@ -19,7 +19,7 @@ const Sidebar = () => {
 
  
 useEffect(() => {
-            const storedUser = localStorage.getItem('farmerName');
+            const storedUser = localStorage.getItem('user');
             if (storedUser) {
             const userData = JSON.parse(storedUser);
             setFarmerName(userData.name);
@@ -75,7 +75,7 @@ useEffect(() => {
                     localStorage.removeItem("farmerName");
                     localStorage.removeItem("token")
                     console.log("Farmer logged out securely.");
-                    navigate('/login');
+                    navigate('/');
                 }}
                 className="w-full flex items-center justify-center p-2 text-gray-900 bg-green-500 rounded-lg font-semibold hover:bg-green-700 hover:text-white transition-colors duration-200"
                 >

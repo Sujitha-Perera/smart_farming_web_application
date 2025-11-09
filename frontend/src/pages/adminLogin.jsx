@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-function LoginForm() {
+function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,24 +18,21 @@ function LoginForm() {
     }
 
     try {
-      // ✅ Payload unchanged
+      // ✅ Admin login payload
       const payload = { email, password };
-      
-      // ✅ POST request to backend login route
-      const response = await axios.post('http://localhost:3001/api/login', payload);
 
-      console.log('Login successful:', response.data);
+      // ✅ POST request to admin login route in backend
+      const response = await axios.post('http://localhost:3001/api/admin', payload);
+
+      console.log('Admin login successful:', response.data);
       alert(response.data.message);
-      alert(`Welcome back, ${response.data.user.name}!`);
-      
 
-      // ✅ Save JWT token in localStorage
-      localStorage.setItem('token', response.data.token);
+      // ✅ Save token and admin info
+      localStorage.setItem('adminToken', response.data.token);
+      localStorage.setItem('adminData', JSON.stringify(response.data.admin));
 
-      // ✅ Save user info in localStorage
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-
-      navigate('/dashboard'); 
+      // ✅ Redirect to Admin Dashboard
+      navigate('/user');
     } catch (err) {
       if (err.response && err.response.data) {
         setError(err.response.data.message);
@@ -46,12 +43,12 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-3/4 flex items-center justify-center bg-green-200 px-4 rounded-2xl">
+    <div className="h-130 flex items-center justify-center bg-green-200 px-4 rounded-2xl">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mt-5">LOGIN</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mt-5">ADMIN LOGIN</h2>
           <p className="mt-2 text-sm text-gray-600">
-            Welcome back! Please login to your account
+            Sign in to manage Smart Farming System
           </p>
         </div>
 
@@ -62,7 +59,7 @@ function LoginForm() {
             
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+                Admin Email
               </label>
               <input
                 id="email"
@@ -72,7 +69,7 @@ function LoginForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                placeholder="Enter your email"
+                placeholder="Enter admin email"
               />
             </div>
 
@@ -88,43 +85,27 @@ function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                placeholder="Enter your password"
+                placeholder="Enter password"
               />
             </div>
 
-            {/* 👇 ADDED Forgot Password link */}
             <div className="flex justify-end text-sm">
-              <Link to="/forgotPassword" className="font-medium text-green-900 hover:text-green-700/80 hover:underline">
-                Forgot your password?
-              </Link>
+              <p className="text-gray-600 italic">Admin access only</p>
             </div>
-            {/* 👆 END ADDED Forgot Password link */}
 
             <div className="flex-col items-center justify-between">
-              
-              {/* ❌ REMOVED "Remember me" checkbox section entirely */}
-
               <button
                 type="submit"
                 className="w-full bg-primary text-white py-2 px-4 rounded-md"
               >
-                Login
+                Login as Admin
               </button>
             </div>
           </div>
         </form>
-
-        <div className="text-center mb-5">
-          <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <button type="button" className="text-green-900 hover:text-green-700/80 hover:underline font-medium">
-              <Link to="/signup"> Sign up here </Link>
-            </button>
-          </p>
-        </div>
       </div>
     </div>
   );
 }
 
-export default LoginForm;
+export default AdminLogin;

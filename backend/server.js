@@ -4,6 +4,8 @@ const app=express();
 import mongoose from 'mongoose';
 import router from './route.js';
 import dotenv from 'dotenv';
+import "./mailShcheduler.js";
+
 
 const port=3001;
 const host='localhost';

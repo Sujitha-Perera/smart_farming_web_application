@@ -9,4 +9,6 @@ const userSchema=new Schema({
 
 const User=mongoose.model('userstable',userSchema);
 
+
+
 export default User;

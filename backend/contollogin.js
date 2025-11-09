@@ -1,5 +1,5 @@
 // loginController.js
-import User from './model.js';
+import User from './model/userModel.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
@@ -44,8 +44,8 @@ export const loginUser = async (req, res) => {
     // 6️⃣ Send response
     res.status(200).json({
       message: "Login successful!",
-      token,
-      user: { name: user.name, email: user.email },
+      token, 
+      user: { id: user._id ,name: user.name, email: user.email },
     });
   } catch (error) {
     console.error("Login error:", error);

@@ -30,7 +30,7 @@ export default function HeaderNav() {
             Contact Us
           </Link>
           <Link
-            to="/dashboard"
+            to="/admin"
             className="hover:text-primary text-sm font-medium transition-colors"
           >
             Admin
