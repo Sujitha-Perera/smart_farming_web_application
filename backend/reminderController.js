@@ -1,7 +1,7 @@
 // controllers/reminderController.js
 import Reminder from "./model/reminderModel.js";
 
-// 📜 Get all reminders with user info
+//  Get all reminders with user info
 export const getReminders = async (req, res) => {
   try {
     const reminders = await Reminder.find().populate("userId", "name email");
@@ -12,7 +12,7 @@ export const getReminders = async (req, res) => {
   }
 };
 
-// ✅ Mark as done
+//  Mark as done
 export const markAsDone = async (req, res) => {
   try {
     const reminder = await Reminder.findByIdAndUpdate(
@@ -27,7 +27,7 @@ export const markAsDone = async (req, res) => {
   }
 };
 
-// ❌ Delete reminder
+//  Delete reminder
 export const deleteReminder = async (req, res) => {
   try {
     await Reminder.findByIdAndDelete(req.params.id);

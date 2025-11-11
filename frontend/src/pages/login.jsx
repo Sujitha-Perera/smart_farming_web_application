@@ -18,10 +18,10 @@ function LoginForm() {
     }
 
     try {
-      // ✅ Payload unchanged
+      //  Payload unchanged
       const payload = { email, password };
       
-      // ✅ POST request to backend login route
+      //  POST request to backend login route
       const response = await axios.post('http://localhost:3001/api/login', payload);
 
       console.log('Login successful:', response.data);
@@ -29,13 +29,13 @@ function LoginForm() {
       alert(`Welcome back, ${response.data.user.name}!`);
       
 
-      // ✅ Save JWT token in localStorage
+      //  Save JWT token in localStorage
       localStorage.setItem('token', response.data.token);
 
-      // ✅ Save user info in localStorage
+      //  Save user info in localStorage
       localStorage.setItem('user', JSON.stringify(response.data.user));
 
-      navigate('/dashboard'); 
+      navigate('/dashboard/profile'); 
     } catch (err) {
       if (err.response && err.response.data) {
         setError(err.response.data.message);
@@ -92,17 +92,17 @@ function LoginForm() {
               />
             </div>
 
-            {/* 👇 ADDED Forgot Password link */}
+            {/*  ADDED Forgot Password link */}
             <div className="flex justify-end text-sm">
               <Link to="/forgotPassword" className="font-medium text-green-900 hover:text-green-700/80 hover:underline">
                 Forgot your password?
               </Link>
             </div>
-            {/* 👆 END ADDED Forgot Password link */}
+            {/*  END ADDED Forgot Password link */}
 
             <div className="flex-col items-center justify-between">
               
-              {/* ❌ REMOVED "Remember me" checkbox section entirely */}
+              {/*  REMOVED "Remember me" checkbox section entirely */}
 
               <button
                 type="submit"

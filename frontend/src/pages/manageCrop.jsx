@@ -40,6 +40,8 @@ const ManageCrop = () => {
   const [crops, setCrops] = useState([]);
   const [reminders, setReminders] = useState([]);
   const [loadingPDF, setLoadingPDF] = useState(false);
+  const [editingCrop, setEditingCrop] = useState(null);
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
 
   const [cropForm, setCropForm] = useState({
     userId: "",
@@ -67,12 +69,10 @@ const ManageCrop = () => {
 
     setLoadingPDF(true);
     try {
-      // Call backend PDF API
       const response = await axios.get(`http://localhost:3001/api/crops/${user._id}`, {
-        responseType: 'blob' // Important for file download
+        responseType: 'blob'
       });
       
-      // Create download link
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -105,12 +105,10 @@ const ManageCrop = () => {
 
     setLoadingPDF(true);
     try {
-      // Call backend PDF API
       const response = await axios.get(`http://localhost:3001/api/reminders/${user._id}`, {
         responseType: 'blob'
       });
       
-      // Create download link
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -143,12 +141,10 @@ const ManageCrop = () => {
 
     setLoadingPDF(true);
     try {
-      // Call backend PDF API
       const response = await axios.get(`http://localhost:3001/api/full-report/${user._id}`, {
         responseType: 'blob'
       });
       
-      // Create download link
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -181,12 +177,12 @@ const ManageCrop = () => {
         if (uid) {
           setUser({ ...actualUser, _id: uid });
           setCropForm((p) => ({ ...p, userId: uid }));
-          console.debug("🟢 User loaded:", actualUser, "uid:", uid);
+          console.debug(" User loaded:", actualUser, "uid:", uid);
         } else {
-          console.warn("⚠️ No user ID found in storage:", parsed);
+          console.warn(" No user ID found in storage:", parsed);
         }
       } else {
-        console.warn("⚠️ No user in storage, please login first.");
+        console.warn(" No user in storage, please login first.");
       }
     } catch (e) {
       console.error("Failed to read stored user", e);
@@ -200,9 +196,9 @@ const ManageCrop = () => {
     if (!user?._id) return;
     try {
       const { data } = await axios.get("http://localhost:3001/api/crops");
-      console.debug("🌾 All crops fetched:", data);
+      console.debug(" All crops fetched:", data);
       const userCrops = data.filter((c) => c.userId?._id === user._id || c.userId === user._id);
-      console.debug("🌱 User crops:", userCrops);
+      console.debug(" User crops:", userCrops);
       setCrops(userCrops);
     } catch (err) {
       console.error("Error fetching crops:", err);
@@ -214,9 +210,9 @@ const ManageCrop = () => {
     if (!user?._id) return;
     try {
       const { data } = await axios.get("http://localhost:3001/api/reminders");
-      console.debug("🔔 All reminders fetched:", data);
+      console.debug(" All reminders fetched:", data);
       const userReminders = data.filter((r) => r.userId?._id === user._id || r.userId === user._id);
-      console.debug("📋 User reminders:", userReminders);
+      console.debug(" User reminders:", userReminders);
       setReminders(userReminders);
     } catch (err) {
       console.error("Error fetching reminders:", err);
@@ -234,13 +230,59 @@ const ManageCrop = () => {
   // --- Handle form changes ---
   const handleCropChange = (e) => {
     setCropForm({ ...cropForm, [e.target.name]: e.target.value });
-    console.debug(`📝 CropForm updated: ${e.target.name} = ${e.target.value}`);
+    console.debug(` CropForm updated: ${e.target.name} = ${e.target.value}`);
+  };
+
+  // --- Set form for update ---
+  const handleEditCrop = (crop) => {
+    setEditingCrop(crop);
+    setIsUpdateMode(true);
+    
+    // Fill form with existing crop data
+    setCropForm({
+      userId: crop.userId?._id || crop.userId,
+      cropType: crop.cropType || "",
+      landArea: crop.landArea || "",
+      soilType: crop.soilType || "",
+      cropGrowingDate: crop.cropGrowingDate ? crop.cropGrowingDate.split('T')[0] : "",
+      expectedHarvestDate: crop.expectedHarvestDate ? crop.expectedHarvestDate.split('T')[0] : "",
+      wateringDate: "",
+      fertilizerDate: "",
+      wateringFrequency: crop.wateringFrequency || "",
+      fertilizerFrequency: crop.fertilizerFrequency || "",
+    });
+    
+    // Scroll to form
+    document.getElementById('crop-form-section').scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // --- Cancel update ---
+  const handleCancelUpdate = () => {
+    setIsUpdateMode(false);
+    setEditingCrop(null);
+    resetCropForm();
+  };
+
+  // --- Reset form ---
+  const resetCropForm = () => {
+    setCropForm({
+      userId: user?._id || "",
+      cropType: "",
+      landArea: "",
+      soilType: "",
+      cropGrowingDate: "",
+      expectedHarvestDate: "",
+      wateringDate: "",
+      fertilizerDate: "",
+      wateringFrequency: "",
+      fertilizerFrequency: "",
+    });
   };
 
   // --- Add crop ---
   const handleAddCrop = async (e) => {
     e.preventDefault();
-    console.debug("🚀 Add crop button pressed:", cropForm, "User:", user);
+    console.debug(" Add crop button pressed:", cropForm, "User:", user);
 
     if (!user?._id) {
       alert("Please login first.");
@@ -271,8 +313,8 @@ const ManageCrop = () => {
       if (!isNaN(d2)) fertilizerDatesArr = [d2];
     }
 
-    console.debug("💧 Watering Dates:", wateringDatesArr);
-    console.debug("🌿 Fertilizer Dates:", fertilizerDatesArr);
+    console.debug(" Watering Dates:", wateringDatesArr);
+    console.debug(" Fertilizer Dates:", fertilizerDatesArr);
 
     const payload = {
       userId: user._id,
@@ -289,24 +331,10 @@ const ManageCrop = () => {
 
     try {
       const response = await axios.post("http://localhost:3001/api/crops", payload);
-      console.debug("✅ Crop added response:", response.data);
+      console.debug("Crop added response:", response.data);
       alert("Crop added and reminders scheduled.");
 
-      // Reset form
-      setCropForm({
-        userId: user._id,
-        cropType: "",
-        landArea: "",
-        soilType: "",
-        cropGrowingDate: "",
-        expectedHarvestDate: "",
-        wateringDate: "",
-        fertilizerDate: "",
-        wateringFrequency: "",
-        fertilizerFrequency: "",
-      });
-
-      // Refresh table and reminders immediately
+      resetCropForm();
       fetchCrops();
       fetchReminders();
     } catch (err) {
@@ -315,8 +343,85 @@ const ManageCrop = () => {
     }
   };
 
+  // --- Update crop ---
+  const handleUpdateCrop = async (e) => {
+    e.preventDefault();
+    if (!editingCrop || !user?._id) {
+      alert("No crop selected for update!");
+      return;
+    }
+
+    console.debug(" Updating crop:", editingCrop._id, "with data:", cropForm);
+
+    // Generate new reminder dates
+    let wateringDatesArr = [];
+    let fertilizerDatesArr = [];
+    
+    if (cropForm.wateringFrequency) {
+      wateringDatesArr = generateDatesBetween(
+        cropForm.cropGrowingDate,
+        cropForm.expectedHarvestDate,
+        parseInt(cropForm.wateringFrequency)
+      );
+    } else if (cropForm.wateringDate) {
+      const d = new Date(cropForm.wateringDate);
+      if (!isNaN(d)) wateringDatesArr = [d];
+    }
+
+    if (cropForm.fertilizerFrequency) {
+      fertilizerDatesArr = generateDatesBetween(
+        cropForm.cropGrowingDate,
+        cropForm.expectedHarvestDate,
+        parseInt(cropForm.fertilizerFrequency)
+      );
+    } else if (cropForm.fertilizerDate) {
+      const d2 = new Date(cropForm.fertilizerDate);
+      if (!isNaN(d2)) fertilizerDatesArr = [d2];
+    }
+
+    const payload = {
+      userId: user._id,
+      cropType: cropForm.cropType,
+      landArea: cropForm.landArea,
+      soilType: cropForm.soilType,
+      cropGrowingDate: cropForm.cropGrowingDate,
+      expectedHarvestDate: cropForm.expectedHarvestDate,
+      wateringDates: wateringDatesArr,
+      fertilizerDates: fertilizerDatesArr,
+      wateringFrequency: cropForm.wateringFrequency || null,
+      fertilizerFrequency: cropForm.fertilizerFrequency || null,
+    };
+
+    try {
+      // First delete existing reminders for this crop
+      await axios.delete(`http://localhost:3001/api/reminders/crop/${editingCrop._id}`);
+      console.debug(" Old reminders deleted for crop:", editingCrop._id);
+
+      // Update the crop
+      const response = await axios.put(`http://localhost:3001/api/crops/${editingCrop._id}`, payload);
+      console.debug(" Crop updated response:", response.data);
+
+      alert("Crop updated successfully! Reminders have been regenerated.");
+
+      // Reset and refresh
+      setIsUpdateMode(false);
+      setEditingCrop(null);
+      resetCropForm();
+      fetchCrops();
+      fetchReminders();
+      
+    } catch (err) {
+      console.error("Error updating crop:", err.response?.data || err);
+      alert("Failed to update crop. Please try again.");
+    }
+  };
+
   // --- Delete crop with immediate state update ---
   const handleDeleteCrop = async (id) => {
+    if (!confirm("Are you sure you want to delete this crop? All associated reminders will also be deleted.")) {
+      return;
+    }
+
     console.debug("Attempting to delete crop with ID:", id);
     try {
       const res = await axios.delete(`http://localhost:3001/api/crops/${id}`);
@@ -324,8 +429,10 @@ const ManageCrop = () => {
       setCrops((prev) => prev.filter((c) => c._id !== id));
       console.debug("Updated crops state:", crops);
       fetchReminders();
+      alert("Crop deleted successfully!");
     } catch (err) {
       console.error("Error deleting crop:", err);
+      alert("Failed to delete crop. Please try again.");
     }
   };
 
@@ -346,7 +453,7 @@ const ManageCrop = () => {
   const handleMarkDone = async (id) => {
     try {
       await axios.put(`http://localhost:3001/api/reminders/${id}/done`);
-      console.debug("✅ Reminder marked done:", id);
+      console.debug(" Reminder marked done:", id);
       setReminders((prev) =>
         prev.map((r) => (r._id === id ? { ...r, isDone: true } : r))
       );
@@ -364,12 +471,14 @@ const ManageCrop = () => {
     const diffDays = Math.round((rem - today) / (1000 * 60 * 60 * 24));
     if (diffDays === 0) return `${r.message} — Today`;
     if (diffDays === 1) return `${r.message} — Tomorrow`;
+    if (diffDays === 7) return `${r.message} — Next Weak`;
+
     return `${r.message} — ${new Date(r.date).toLocaleDateString()}`;
   };
 
   return (
     <div className="min-h-screen bg-green-50 p-6">
-      {/* Updated Header Section */}
+      {/* Header Section */}
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-green-700 mb-3">🌾 Manage Crop Dashboard</h1>
         <p className="text-lg text-gray-600 max-w-3xl mx-auto">
@@ -377,7 +486,7 @@ const ManageCrop = () => {
           for watering and fertilization, and track all your farming activities in one place.
         </p>
         
-        {/* PDF Download Buttons - Connected to Backend */}
+        {/* PDF Download Buttons */}
         <div className="mt-6 flex justify-center gap-4 flex-wrap">
           <button
             onClick={downloadCropsPDF}
@@ -444,6 +553,7 @@ const ManageCrop = () => {
           <h3 className="font-semibold text-green-800 mb-2">📋 What you can do here:</h3>
           <ul className="text-sm text-gray-700 text-left list-disc list-inside space-y-1">
             <li>Add new crops with their growing details</li>
+            <li>Update existing crops and regenerate reminders</li>
             <li>Set automatic watering and fertilizer schedules</li>
             <li>View and manage all your crops in one table</li>
             <li>Get smart reminders for important farming tasks</li>
@@ -471,94 +581,146 @@ const ManageCrop = () => {
       {/* Crops Section */}
       {activeTab === "crops" && (
         <section>
-          <h2 className="text-2xl font-semibold text-green-800 mb-4">🌾 Manage Your Crops</h2>
-          <p className="text-gray-600 mb-4">Add new crops and set up automatic reminders for watering and fertilization.</p>
+          <h2 className="text-2xl font-semibold text-green-800 mb-4">
+            {isUpdateMode ? "✏️ Update Your Crop" : "🌾 Manage Your Crops"}
+          </h2>
+          <p className="text-gray-600 mb-4">
+            {isUpdateMode 
+              ? "Update your crop details and regenerate reminders for watering and fertilization."
+              : "Add new crops and set up automatic reminders for watering and fertilization."}
+          </p>
           
-          <form onSubmit={handleAddCrop} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div>
-              <label className="font-semibold">User</label>
-              <input value={user?.name || ""} disabled className="p-2 border rounded bg-gray-100 w-full" />
-            </div>
-            <div>
-              <label className="font-semibold">Crop Type</label>
-              <select name="cropType" value={cropForm.cropType} onChange={handleCropChange} required className="p-2 border rounded w-full">
-                <option value="">Select Crop</option>
-                {cropTypes.map((ct) => <option key={ct} value={ct}>{ct}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="font-semibold">Land Area</label>
-              <input name="landArea" value={cropForm.landArea} onChange={handleCropChange} required placeholder="How Many Acres:" className="p-2 border rounded w-full" />
-            </div>
-            <div>
-              <label className="font-semibold">Soil Type</label>
-              <select name="soilType" value={cropForm.soilType} onChange={handleCropChange} required className="p-2 border rounded w-full">
-                <option value="">Select Soil</option>
-                {soilTypes.map((st) => <option key={st} value={st}>{st}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="font-semibold">Crop Growing Date</label>
-              <input type="date" name="cropGrowingDate" value={cropForm.cropGrowingDate} onChange={handleCropChange} required className="p-2 border rounded w-full" />
-            </div>
-            <div>
-              <label className="font-semibold">Expected Harvest Date</label>
-              <input type="date" name="expectedHarvestDate" value={cropForm.expectedHarvestDate} onChange={handleCropChange} required className="p-2 border rounded w-full" />
-            </div>
-            <div>
-              <label className="font-semibold">Watering Frequency (days)</label>
-              <input type="number" min="1" name="wateringFrequency" value={cropForm.wateringFrequency} onChange={handleCropChange} placeholder="e.g. 7" className="p-2 border rounded w-full" />
-              <small className="text-xs text-gray-600">Leave empty to use single Watering Date below.</small>
-            </div>
-            <div>
-              <label className="font-semibold">Fertilizer Frequency (days)</label>
-              <input type="number" min="1" name="fertilizerFrequency" value={cropForm.fertilizerFrequency} onChange={handleCropChange} placeholder="e.g. 14" className="p-2 border rounded w-full" />
-              <small className="text-xs text-gray-600">Leave empty to use single Fertilizer Date below.</small>
-            </div>
-            <div>
-              <label className="font-semibold">Single Watering Date (optional)</label>
-              <input type="date" name="wateringDate" value={cropForm.wateringDate} onChange={handleCropChange} className="p-2 border rounded w-full" />
-            </div>
-            <div>
-              <label className="font-semibold">Single Fertilizer Date (optional)</label>
-              <input type="date" name="fertilizerDate" value={cropForm.fertilizerDate} onChange={handleCropChange} className="p-2 border rounded w-full" />
-            </div>
+          {/* Crop Form */}
+          <div id="crop-form-section">
+            <form 
+              onSubmit={isUpdateMode ? handleUpdateCrop : handleAddCrop} 
+              className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 bg-white p-6 rounded-lg shadow"
+            >
+              <div>
+                <label className="font-semibold">User</label>
+                <input value={user?.name || ""} disabled className="p-2 border rounded bg-gray-100 w-full" />
+              </div>
+              <div>
+                <label className="font-semibold">Crop Type</label>
+                <select name="cropType" value={cropForm.cropType} onChange={handleCropChange} required className="p-2 border rounded w-full">
+                  <option value="">Select Crop</option>
+                  {cropTypes.map((ct) => <option key={ct} value={ct}>{ct}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="font-semibold">Land Area</label>
+                <input name="landArea" value={cropForm.landArea} onChange={handleCropChange} required placeholder="How Many Acres:" className="p-2 border rounded w-full" />
+              </div>
+              <div>
+                <label className="font-semibold">Soil Type</label>
+                <select name="soilType" value={cropForm.soilType} onChange={handleCropChange} required className="p-2 border rounded w-full">
+                  <option value="">Select Soil</option>
+                  {soilTypes.map((st) => <option key={st} value={st}>{st}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="font-semibold">Crop Growing Date</label>
+                <input type="date" name="cropGrowingDate" value={cropForm.cropGrowingDate} onChange={handleCropChange} required className="p-2 border rounded w-full" />
+              </div>
+              <div>
+                <label className="font-semibold">Expected Harvest Date</label>
+                <input type="date" name="expectedHarvestDate" value={cropForm.expectedHarvestDate} onChange={handleCropChange} required className="p-2 border rounded w-full" />
+              </div>
+              <div>
+                <label className="font-semibold">Watering Frequency (days)</label>
+                <input type="number" min="1" name="wateringFrequency" value={cropForm.wateringFrequency} onChange={handleCropChange} placeholder="e.g. 7" className="p-2 border rounded w-full" />
+                <small className="text-xs text-gray-600">Leave empty to use single Watering Date below.</small>
+              </div>
+              <div>
+                <label className="font-semibold">Fertilizer Frequency (days)</label>
+                <input type="number" min="1" name="fertilizerFrequency" value={cropForm.fertilizerFrequency} onChange={handleCropChange} placeholder="e.g. 14" className="p-2 border rounded w-full" />
+                <small className="text-xs text-gray-600">Leave empty to use single Fertilizer Date below.</small>
+              </div>
+              <div>
+                <label className="font-semibold">Single Watering Date (optional)</label>
+                <input type="date" name="wateringDate" value={cropForm.wateringDate} onChange={handleCropChange} className="p-2 border rounded w-full" />
+              </div>
+              <div>
+                <label className="font-semibold">Single Fertilizer Date (optional)</label>
+                <input type="date" name="fertilizerDate" value={cropForm.fertilizerDate} onChange={handleCropChange} className="p-2 border rounded w-full" />
+              </div>
 
-              <button 
-                type="submit" 
-                disabled={!userLoaded || !user?._id} 
-                className="col-span-2 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white py-2 px-3 rounded text-sm font-medium w-48 mx-auto"
-              >
-                Add Crop & Schedule Reminders
-              </button>
-          </form>
+              <div className="col-span-2 flex justify-center gap-4">
+                {isUpdateMode ? (
+                  <>
+                    <button 
+                      type="submit" 
+                      className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded font-medium"
+                    >
+                      Update Crop & Reminders
+                    </button>
+                    <button 
+                      type="button" 
+                      onClick={handleCancelUpdate}
+                      className="bg-gray-600 hover:bg-gray-700 text-white py-2 px-6 rounded font-medium"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <button 
+                    type="submit" 
+                    disabled={!userLoaded || !user?._id} 
+                    className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white py-2 px-6 rounded font-medium"
+                  >
+                    Add Crop & Schedule Reminders
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
 
+          {/* Crops Table */}
           <div className="bg-white rounded-lg shadow p-4">
             <h3 className="text-lg font-semibold text-green-700 mb-3">Your Current Crops</h3>
-            <table className="w-full border text-sm bg-white rounded">
-              <thead className="bg-green-100">
-                <tr>
-                  <th className="p-2">Crop</th>
-                  <th className="p-2">Land</th>
-                  <th className="p-2">Soil</th>
-                  <th className="p-2">Harvest</th>
-                  <th className="p-2">Action</th>
-                </tr>
-              </thead>
+            {crops.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                No crops found. Add your first crop above!
+              </div>
+            ) : (
+              <table className="w-full border text-sm bg-white rounded">
+                <thead className="bg-green-100">
+                  <tr>
+                    <th className="p-2">Crop</th>
+                    <th className="p-2">Land</th>
+                    <th className="p-2">Soil</th>
+                    <th className="p-2">Growing Date</th>
+                    <th className="p-2">Harvest Date</th>
+                    <th className="p-2">Actions</th>
+                  </tr>
+                </thead>
                 <tbody>
                   {crops.map((c) => (
-                    <tr key={c._id} className="border-t">
+                    <tr key={c._id} className="border-t hover:bg-green-50">
                       <td className="p-2 text-center">{c.cropType}</td>
                       <td className="p-2 text-center">{c.landArea}</td>
                       <td className="p-2 text-center">{c.soilType}</td>
+                      <td className="p-2 text-center">{new Date(c.cropGrowingDate).toLocaleDateString()}</td>
                       <td className="p-2 text-center">{new Date(c.expectedHarvestDate).toLocaleDateString()}</td>
-                      <td className="p-2 text-center">
-                        <button onClick={() => handleDeleteCrop(c._id)} className="bg-red-500 text-white px-2 rounded">Delete</button>
+                      <td className="p-2 text-center space-x-2">
+                        <button 
+                          onClick={() => handleEditCrop(c)} 
+                          className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                        >
+                          Update
+                        </button>
+                        <button 
+                          onClick={() => handleDeleteCrop(c._id)} 
+                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
-            </table>
+              </table>
+            )}
           </div>
         </section>
       )}

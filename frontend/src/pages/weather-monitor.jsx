@@ -50,7 +50,7 @@ export default function WeatherMonitor() {
     return directions[Math.round(degrees / 22.5) % 16];
   };
 
-  const getUVIndex = (clouds, time) => {
+  const getUVIndex = (clouds) => {
     if (clouds > 80) return "Low";
     if (clouds > 50) return "Moderate";
     return "High";
@@ -80,7 +80,7 @@ export default function WeatherMonitor() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg">
+    <div className="max-w-8xl mx-auto p-22 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg">
       {/* Farmer-Friendly Header */}
       <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-green-800 mb-3">

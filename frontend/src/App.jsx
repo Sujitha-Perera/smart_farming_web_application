@@ -13,16 +13,17 @@ import Home from "@/pages/home";
 import LoginForm from "@/pages/login";
 import SignupForm from "@/pages/signup";
 import About from "@/pages/about";
-import Dashboard from "@/pages/dashboard";
 import WeatherMonitor from "@/pages/weather-monitor";
 import Riskpredict from "@/pages/risk-predict";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import UserManage from "@/pages/userManage";
 import AdminLogin from "@/pages/adminLogin";
-import FarmerDashboardVisual from "./pages/farmerDashboard";
-
-import ManageCrop from "./pages/manageCrop";
+import ManageCrop from "@/pages/manageCrop";
+import MyFrofile from "@/pages/myFrofile";
+import FarmingGuidance from "@/pages/farmerGuide";
+import ContactUs from "@/pages/contactus";
+import AdminContact from "@/pages/adminContact";
 
 
 
@@ -36,22 +37,27 @@ const App = () => {
       <Routes>
         
         <Route element={<DashboardLayout />}>
-          <Route path="dashboard" element={<Dashboard/>}/>
+          <Route path="dashboard/profile" element={<MyFrofile/>}/>
           <Route path="dashboard/weather" element={<WeatherMonitor/>}/>
           <Route path="dashboard/risks" element={<Riskpredict/>}/>
-          <Route path="/dashboard/analytics" element={<FarmerDashboardVisual/>}/>
-          <Route path="/dashboard/manage" element={<ManageCrop/>}/>
+          <Route path="dashboard/manage" element={<ManageCrop/>}/>
+          <Route path="dashboard/guide" element={<FarmingGuidance/>}/>
+
 
         </Route>
 
         <Route element={<AdminLayout/>}>
           <Route path="user" element={<UserManage/>}/>
+          <Route path="/admin/alerts" element={<AdminContact/>}/>
+
         </Route>
 
         <Route element={<MainLayout />}>
           {/* When app starts, "/" loads Home */}
           <Route path="/" element={<Home />} />   ✅ Home is default
           <Route path="about" element={<About/>}/>
+          <Route path="contactus" element={<ContactUs/>}/>
+
         </Route>
 
         <Route element={<AuthLayout/>}>

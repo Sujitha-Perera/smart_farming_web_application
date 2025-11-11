@@ -7,9 +7,10 @@ import { forgotPassword } from './forgotPassword.js';
 import { resetPassword } from './resetPassword.js';
 import { adminLogin } from './adminLogin.js';
 import {getAllUsers,updateUser,deleteUser} from './manageUser.js'
-import { addCrop,getAllCrops,updateCrop,deleteCrop } from './cropController.js';
+import { addCrop,getAllCrops,updateCrop,deleteCrop,getCropsByUser,deleteCropRemindersEndpoint } from './cropController.js';
 import { getReminders,markAsDone,deleteReminder } from './reminderController.js';
 import { downloadCropsPDF,downloadFullReportPDF,downloadRemindersPDF } from './pdfService.js';
+import { submitContact,getContacts,getContactStats,updateContactStatus,sendResponse,deleteContact } from './contactContoller.js';
 
 
 const router = Router();
@@ -31,21 +32,35 @@ router.get("/users", getAllUsers);
 router.put("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);
 
-// 🌱 Crop routes
-router.post("/crops", addCrop);
-router.get("/crops", getAllCrops);
-router.put("/crops/:id", updateCrop);
-router.delete("/crops/:id", deleteCrop);
 
-// 🔔 Reminder routes
+// In your routes file
+router.post('/crops', addCrop);
+router.get('/crops', getAllCrops);
+router.get('/crops/user/:userId', getCropsByUser);
+router.put('/crops/:id', updateCrop);
+router.delete('/crops/:id', deleteCrop);
+router.delete('/reminders/crop/:cropId', deleteCropRemindersEndpoint);
+
+//  Reminder routes
 router.get("/reminders", getReminders);
 router.put("/reminders/:id/done", markAsDone);
 router.delete("/reminders/:id", deleteReminder);
 
-// 📄 PDF Routes
+//  PDF Routes
 router.get("/crops/:userId", downloadCropsPDF);
 router.get("/reminders/:userId", downloadRemindersPDF);
 router.get("/full-report/:userId", downloadFullReportPDF);
+
+// contactUs routes
+
+//public
+router.post("/contact",submitContact);
+//admin
+router.get('/admin/contacts', getContacts);
+router.get('/admin/contacts/stats', getContactStats);
+router.patch('/admin/contacts/:id/status', updateContactStatus);
+router.post('/admin/contacts/:id/respond', sendResponse);
+router.delete('/admin/contacts/:id', deleteContact);
 
 
 

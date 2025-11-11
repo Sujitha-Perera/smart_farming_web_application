@@ -14,8 +14,8 @@ class PDFService {
       font: 'Helvetica',
       info: {
         Title: 'Farming Report',
-        Author: 'Farm Management System',
-        Creator: 'Farm Management System'
+        Author: 'Smart Farming System',
+        Creator: 'Smart Farming System'
       }
     });
   }

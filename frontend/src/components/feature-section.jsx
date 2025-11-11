@@ -33,6 +33,13 @@ const features = [
       "AI insights and real-time data help farmers make quick, accurate, and confident decisions easily.",
     image: "/images/support.jpg",
     color: "bg-green-700",
+  },
+    {
+    title: "Real-time Weather ",
+    description:
+      "Live weather updates with current conditions based on your precise farm location.",
+    image: "/images/realtime.jpg",
+    color: "bg-green-700",
   }
 ]
 

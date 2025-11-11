@@ -3,10 +3,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 
 const adminNavItems = [
   { name: 'Farmer Management', icon: '📊', path: '/user' },
-  { name: 'Crop Monitoring', icon: '🌾', path: '/admin/crops' },
-  { name: 'Marketplace', icon: '🛒', path: '/admin/marketplace' },
-  { name: 'Analytics & Reports', icon: '📈', path: '/admin/analytics' },
   { name: 'Alerts & Notifications', icon: '🔔', path: '/admin/alerts' },
+  { name: 'Analytics & Reports', icon: '📈', path: '/admin/analytics' },
   { name: 'System Settings', icon: '⚙️', path: '/admin/settings' },
   { name: 'Admin Profile', icon: '👤', path: '/admin/profile' },
 ];
@@ -24,8 +22,8 @@ const AdminSidebar = () => {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('admin');
-    localStorage.removeItem('token');
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminData');
     console.log('Admin logged out securely.');
     navigate('/');
   };

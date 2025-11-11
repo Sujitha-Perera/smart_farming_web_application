@@ -11,25 +11,24 @@ export const loginUser = async (req, res) => {
 
 
 
-  // 1️⃣ Validate input
+  // 1️ Validate input
   if (!email || !password) {
     return res.status(400).json({ message: "Please enter all fields" });
   }
 
   try {
-    // 2️⃣ Find user by email
+    // 2️ Find user by email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
-
-    // 3️⃣ Compare password securely using bcrypt
+    // 3️ Compare password securely using bcrypt
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // 4️⃣ Create JWT payload
+    // 4️ Create JWT payload
     const payload = {
       user: {
         id: user._id,
@@ -38,10 +37,10 @@ export const loginUser = async (req, res) => {
       },
     };
 
-    // 5️⃣ Sign JWT token
+    // 5️ Sign JWT token
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    // 6️⃣ Send response
+    // 6️ Send response
     res.status(200).json({
       message: "Login successful!",
       token, 

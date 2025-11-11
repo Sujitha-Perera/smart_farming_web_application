@@ -24,7 +24,7 @@ export default function HeaderNav() {
             About
           </Link>
           <Link
-            to="/about"
+            to="/contactus"
             className="hover:text-primary text-sm font-medium transition-colors"
           >
             Contact Us

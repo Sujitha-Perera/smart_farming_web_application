@@ -10,20 +10,20 @@ export const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 🔍 Find admin by email
+    //  Find admin by email
     const admin = await Admin.findOne({ email });
     if (!admin) {
     
       return res.status(401).json({ message: "Admin not found" });
     }
 
-    // 🔐 Compare passwords
+    //  Compare passwords
     const valid = await bcrypt.compare(password, admin.password);
     if (!valid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // 🎟 Generate JWT token
+    //  Generate JWT token
     const token = jwt.sign(
       { id: admin._id, role: "admin" },
       process.env.JWT_SECRET,

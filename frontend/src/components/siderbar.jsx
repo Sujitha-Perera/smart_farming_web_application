@@ -1,15 +1,18 @@
 import React from 'react';
 import { NavLink,useNavigate} from 'react-router-dom'; 
 import { useEffect,useState } from 'react';
+import CollapsibleSidebar from './collapsibleSiderbar';
 
 
 const navItems = [
-    { name: 'Dashboard', icon: '🏠', path: '/dashboard' },
+    // { name: 'Dashboard', icon: '🏠', path: '/dashboard' },
+    { name: 'My Profile', icon: '👤', path: '/dashboard/profile' },
     { name: 'Weather Monitoring', icon: '☁️', path: '/dashboard/weather' },
     { name: 'Risk Prediction', icon: '🚨', path: '/dashboard/risks' },
-    { name: 'Crop Analytics', icon: '📈', path: '/dashboard/analytics' },
     { name: 'Manage Crop', icon: '🌱', path: '/dashboard/manage' },
-    { name: 'My Profile', icon: '👤', path: '/dashboard/profile' },
+    { name: 'Farmer Guide', icon: '💡', path: '/dashboard/guide' },
+
+    
 ];
 
 
@@ -72,7 +75,7 @@ useEffect(() => {
                 <button
                 onClick={() => {
                     localStorage.removeItem("farmerNam");
-                    localStorage.removeItem("farmerName");
+                    localStorage.removeItem("user");
                     localStorage.removeItem("token")
                     console.log("Farmer logged out securely.");
                     navigate('/');
