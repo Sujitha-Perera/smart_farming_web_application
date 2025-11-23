@@ -45,7 +45,7 @@ const features = [
 
 export default function FeaturesSection() {
   return (
-    <section className="py-16 bg-gray-50  ">
+    <section className="py-16 bg-gradient-to-br from-green-50 to-green-300  ">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">
           SmartAgri Features

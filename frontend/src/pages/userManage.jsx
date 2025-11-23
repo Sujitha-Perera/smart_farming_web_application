@@ -11,7 +11,7 @@ const UserManage = () => {
   const [formData, setFormData] = useState({ name: "", email: "" });
   const [loading, setLoading] = useState(false);
 
-  // ✅ Fetch all users
+  //  Fetch all users
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -28,28 +28,28 @@ const UserManage = () => {
     fetchUsers();
   }, []);
 
-  // ✅ Handle input changes
+  //  Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ✅ Edit a user
+  //  Edit a user
   const handleEdit = (user) => {
     setEditUser(user._id);
     setFormData({ name: user.name, email: user.email });
   };
 
-  // ✅ Cancel edit
+  //  Cancel edit
   const handleCancel = () => {
     setEditUser(null);
     setFormData({ name: "", email: "" });
   };
 
-  // ✅ Update user
+  //  Update user
   const handleUpdate = async (id) => {
     try {
       await axios.put(`http://localhost:3001/api/users/${id}`, formData);
-      alert("✅ User updated successfully!");
+      alert(" User updated successfully!");
       fetchUsers();
       handleCancel();
     } catch (error) {
@@ -57,7 +57,7 @@ const UserManage = () => {
     }
   };
 
-  // ✅ Delete user
+  //  Delete user
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {

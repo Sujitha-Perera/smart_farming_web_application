@@ -14,7 +14,6 @@ import LoginForm from "@/pages/login";
 import SignupForm from "@/pages/signup";
 import About from "@/pages/about";
 import WeatherMonitor from "@/pages/weather-monitor";
-import Riskpredict from "@/pages/risk-predict";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import UserManage from "@/pages/userManage";
@@ -24,6 +23,9 @@ import MyFrofile from "@/pages/myFrofile";
 import FarmingGuidance from "@/pages/farmerGuide";
 import ContactUs from "@/pages/contactus";
 import AdminContact from "@/pages/adminContact";
+import WeatherPredict from "./pages/risk-predict";
+import AdminManage from "./pages/adminCropReminder";
+
 
 
 
@@ -39,7 +41,7 @@ const App = () => {
         <Route element={<DashboardLayout />}>
           <Route path="dashboard/profile" element={<MyFrofile/>}/>
           <Route path="dashboard/weather" element={<WeatherMonitor/>}/>
-          <Route path="dashboard/risks" element={<Riskpredict/>}/>
+          <Route path="dashboard/risks" element={<WeatherPredict/>}/>
           <Route path="dashboard/manage" element={<ManageCrop/>}/>
           <Route path="dashboard/guide" element={<FarmingGuidance/>}/>
 
@@ -49,6 +51,8 @@ const App = () => {
         <Route element={<AdminLayout/>}>
           <Route path="user" element={<UserManage/>}/>
           <Route path="/admin/alerts" element={<AdminContact/>}/>
+          <Route path="/admin/reminder" element={<AdminManage/>}/>
+
 
         </Route>
 

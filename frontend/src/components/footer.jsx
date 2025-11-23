@@ -2,13 +2,13 @@ import { Facebook, Instagram, Twitter } from "lucide-react"
 
 export default function Footer() {
   return (
-    <footer className="bg-green-950 text-white py-12 ">
+    <footer className="bg-green-800 text-white py-12 ">
       <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
         
         {/* Brand */}
         <div className="flex flex-col items-center md:items-start">
           <h2 className="text-2xl font-bold mb-2">SmartAgri</h2>
-          <p className="text-sm text-gray-300">
+          <p className="text-sm text-white">
             Growing smarter, together 🌱
           </p>
         </div>
@@ -42,7 +42,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <p className="text-sm text-gray-400 text-center md:text-right mt-4 md:mt-0">
+        <p className="text-sm text-white text-center md:text-right mt-4 md:mt-0">
           © {new Date().getFullYear()} SmartAgri. All rights reserved.
         </p>
 

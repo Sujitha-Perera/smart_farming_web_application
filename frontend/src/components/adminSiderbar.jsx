@@ -4,9 +4,9 @@ import { NavLink, useNavigate } from 'react-router-dom';
 const adminNavItems = [
   { name: 'Farmer Management', icon: '📊', path: '/user' },
   { name: 'Alerts & Notifications', icon: '🔔', path: '/admin/alerts' },
-  { name: 'Analytics & Reports', icon: '📈', path: '/admin/analytics' },
-  { name: 'System Settings', icon: '⚙️', path: '/admin/settings' },
-  { name: 'Admin Profile', icon: '👤', path: '/admin/profile' },
+  { name: 'Crops & Reminders', icon: '📈', path: '/admin/reminder' },
+
+
 ];
 
 const AdminSidebar = () => {

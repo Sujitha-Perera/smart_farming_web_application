@@ -1,4 +1,3 @@
-
 import { Router } from 'express';
 import { registerUser } from './controller.js'; 
 import { loginUser } from './contollogin.js';
@@ -11,7 +10,7 @@ import { addCrop,getAllCrops,updateCrop,deleteCrop,getCropsByUser,deleteCropRemi
 import { getReminders,markAsDone,deleteReminder } from './reminderController.js';
 import { downloadCropsPDF,downloadFullReportPDF,downloadRemindersPDF } from './pdfService.js';
 import { submitContact,getContacts,getContactStats,updateContactStatus,sendResponse,deleteContact } from './contactContoller.js';
-
+import { getAllCropsAdmin,updateCropAdmin,deleteCropAdmin, getAllRemindersAdmin,updateReminderAdmin,deleteReminderAdmin,} from "./manageCropAdmin.js";
 
 const router = Router();
 
@@ -61,6 +60,16 @@ router.get('/admin/contacts/stats', getContactStats);
 router.patch('/admin/contacts/:id/status', updateContactStatus);
 router.post('/admin/contacts/:id/respond', sendResponse);
 router.delete('/admin/contacts/:id', deleteContact);
+
+// Admin manage crops / reminders
+// (removed verifyToken to allow public fetching)
+router.get("/admin/crops", getAllCropsAdmin);
+router.put("/admin/crops/:id", updateCropAdmin);
+router.delete("/admin/crops/:id", deleteCropAdmin);
+
+router.get("/admin/reminders", getAllRemindersAdmin);
+router.put("/admin/reminders/:id", updateReminderAdmin);
+router.delete("/admin/reminders/:id", deleteReminderAdmin);
 
 
 

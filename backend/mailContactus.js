@@ -60,7 +60,7 @@ export const sendResponseEmail = async (contact, adminResponse) => {
           
           <div style="background: #065f46; padding: 20px; text-align: center; color: white;">
             <p style="margin: 0; font-size: 14px;">
-              &copy; 2024 SmartAgri. All rights reserved.<br>
+              &copy; 2025 SmartAgri. All rights reserved.<br>
               Transforming Agriculture with Technology
             </p>
           </div>
